@@ -63,8 +63,6 @@ function setupClickHandlers() {
 		if (target.matches('#gas-peddle')) {
 			handleAccelerate();
 		}
-
-		console.log('Store updated :: ', store);
 	}, false);
 }
 
