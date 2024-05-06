@@ -301,6 +301,7 @@ function resultsView(positions) {
 			${results.join('')}
 			<a href="/race">Start a new race</a>
 		</main>
+		<footer></footer>
 	`;
 }
 
