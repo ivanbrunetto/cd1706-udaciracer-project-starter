@@ -2,8 +2,6 @@
 let store = {
 	track_id: undefined,
 	track_name: undefined,
-	track_size: undefined, 
-	track_size_by_segment: undefined,
 	player_id: undefined,
 	player_name: undefined,
 	race_id: undefined,
@@ -86,7 +84,6 @@ async function handleCreateRace() {
 	
 	console.log('RACE created :: ', race);
 	store.race_id = race.ID;
-	calculateTrackSize(race.Track);
 	
 	// The race has been created, now start the countdown
 	await runCountdown();
@@ -175,22 +172,6 @@ function handleSelectTrack(target) {
 
 function handleAccelerate() {
 	accelerate(store.race_id);
-}
-
-function calculateTrackSize(track) {
-	// initialize
-	store.track_size = 0;
-	store.track_size_by_segment = [];
-	
-	// calculate total size
-	track.segments.map(segment => store.track_size += segment);
-	
-	// calculate accumulated size for each segment
-	let count = 0;
-	track.segments.reduce((accumulatedSize, currentSize) => {
-		store.track_size_by_segment[count++] = accumulatedSize + currentSize;
-		return accumulatedSize + currentSize;
-	}, 0);
 }
 
 // HTML VIEWS ------------------------------------------------
@@ -324,29 +305,11 @@ function raceProgress(positions) {
 
 	positions = positions.sort((a, b) => (a.segment > b.segment) ? -1 : 1);
 	let count = 1;
-	const progressCount = Math.round(
-		!positions[0].segment ? 0 : 
-		(store.track_size_by_segment[positions[0].segment - 1] / 
-		store.track_size) 
-		* 100);
-
-	const progress = `
-		<tr>
-			<td>
-				<h2>
-					<label for="progress">Race progress:</label>
-					<progress id="progress" max="100" value="${progressCount}">
-					</progress>
-				</h2> 
-			</td>
-		</tr>
-	`;
 	
 	const results = positions.map(renderPositionCard);
 
 	return `
 		<table>
-			${progress}
 			${results.join('')}
 		</table>
 	`;
